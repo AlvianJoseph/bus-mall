@@ -1,51 +1,95 @@
 'use strict';
 
-var goats = [];
+var catalogItemArray = [];
+var timesClicked = 0;
 
-function getRandomGoatNumber(){
-    var randomNumber = Math.floor(Math.random()* goats.length);
-    //Variable makes it easier to debug with console logs
-    return randomNumber;
-}
-
-function renderRandomGoat(){
-    var goatPictureReference = document.getElementById('goat-picture');
-    var randomIndex = getRandomGoatNumber();
-    var randomGoat = goats[randomIndex];
-
-    goatPictureReference.src = randomGoat.picturePath;
-    goatPictureReference.alt = randomGoat.description;
-
-}
-
-function Goat(picturePath, description){
+function CatalogItem(picturePath, description, timesClicked) {
     this.picturePath = picturePath;
     this.description = description;
+    this.timesClicked = timesClicked;
 
-    goats.push(this);
+    catalogItemArray.push(this);
 }
 
-new Goat('img/cruisin-goat.jpg', 'A goat with special accomodations');
-new Goat('img/kissing-goat.jpg', 'Two goats kissing');
-new Goat('img/sassy-goat.jpg', 'A goat that is sassy');
-new Goat('img/smiling-goat.jpg', 'A goat smiling');
-new Goat('img/sweater-goat.jpg', 'A goat with with a sweater');
+new CatalogItem("img/bag.jpg", 'A bag with r2d2 design');
+new CatalogItem("img/banana.jpg", 'A banana');
+new CatalogItem("img/bathroom.jpg", 'A bathroom');
+new CatalogItem("img/boots.jpg", 'yellow boots');
+new CatalogItem("img/breakfast.jpg", 'A breakfast');
+new CatalogItem("img/bubblegum.jpg", 'bubblegum');
+new CatalogItem("img/chair.jpg", 'A chair');
+new CatalogItem("img/cthulhu.jpg", 'cthulhu');
+new CatalogItem("img/dog-duck.jpg", 'A dog with duck');
 
-renderRandomGoat();
-
-var goatPictureReference = document.getElementById('goat-picture');
-goatPictureReference.addEventListener('click', renderRandomGoat);
-
-var previousIndex =-1;
-while(randomIndex === previousIndex){
-    randomIndex = getRandomGoatNumber();
+function getRandomItemNumber() {
+    var randomItemNumber = Math.floor(Math.random() * catalogItemArray.length);
+    return randomItemNumber;
 }
 
-var musicPlayerReference = document.getElementById('music-player')
-var changeVolumeReference = documnet.getElementById('change-volume')
+function addClick() {
+    if (timesClicked <= 25) {
+        timesClicked += 1
+        console.log(timesClicked);
+        if (timesClicked > 25) {
+            alert("Thanks for participating");
+        }
+    }
+}
 
-//functions are values so they can be sent as arguments
-changeVolumeReference.addEventListener('click', function(){
-    var musicPlayerReference = document.getElementById('music-player')
-    musicPlayerReference.volume;
-})
+var previousItem = -1;
+
+function renderCatalogItem() {
+
+    var randomIndex = getRandomItemNumber();
+    var currentItem = catalogItemArray[randomIndex];
+    var catalogReference = document.getElementById('catalog-item');
+    var catalogReference2 = document.getElementById('catalog-item2');
+    var catalogReference3 = document.getElementById('catalog-item3');
+
+    function firstImage() {
+        randomIndex = getRandomItemNumber();
+        currentItem = catalogItemArray[randomIndex];
+        catalogReference.src = currentItem.picturePath;
+        catalogReference.alt = currentItem.description;
+        while (randomIndex === previousItem) {
+            randomIndex = getRandomItemNumber();
+        }
+        previousItem = currentItem;
+    }
+
+    function secondImage() {
+        randomIndex = getRandomItemNumber();
+        currentItem = catalogItemArray[randomIndex];
+        catalogReference2.src = currentItem.picturePath;
+        catalogReference2.alt = currentItem.description;
+        while (randomIndex === previousItem) {
+            randomIndex = getRandomItemNumber();
+        }
+        previousItem = currentItem;
+    }
+
+    function thirdImage() {
+        randomIndex = getRandomItemNumber();
+        currentItem = catalogItemArray[randomIndex];
+        catalogReference3.src = currentItem.picturePath;
+        catalogReference3.alt = currentItem.description;
+        while (randomIndex === previousItem) {
+            randomIndex = getRandomItemNumber();
+        }
+        previousItem = currentItem;
+    }
+
+    firstImage();
+    secondImage();
+    thirdImage();
+}
+
+renderCatalogItem();
+var catalogReference = document.getElementById('catalog-item');
+catalogReference.addEventListener('click', renderCatalogItem);
+
+var catalogReference2 = document.getElementById('catalog-item2');
+catalogReference2.addEventListener('click', renderCatalogItem);
+
+var catalogReference3 = document.getElementById('catalog-item3');
+catalogReference3.addEventListener('click', renderCatalogItem);
