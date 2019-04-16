@@ -56,51 +56,60 @@ function renderCatalogItem() {
     var randomItem = -1;
     var randomItem2 = -1;
     var randomItem3 = -1;
-    var currentItem = AllItemsArray[randomItem];
+    var itemImage = AllItemsArray[randomItem];
     var catalogImageReference = document.getElementById('catalog-item');
     var catalogImageReference2 = document.getElementById('catalog-item2');
     var catalogImageReference3 = document.getElementById('catalog-item3');
 
-    while (randomItemArray.length < 1) {
-        randomItem = getRandomItem();
-        currentItem = AllItemsArray[randomItem];
-        catalogImageReference.src = currentItem.picturePath;
-        catalogImageReference.alt = currentItem.description;
-        if (currentItem !== previousItem) {
-            randomItemArray.push(randomItem);
-            console.log(`current item: ${randomItem}`)
-        } else {
-            console.log('Same item as before')
+
+    for (var i = 0; i < 1; i++) {
+        while (randomItem === previousItem) {
+            randomItem = getRandomItem();
+            itemImage = AllItemsArray[randomItem];
+            catalogImageReference.src = itemImage.picturePath;
+            catalogImageReference.alt = itemImage.description;
+            if (randomItem !== previousItem) {
+                randomItemArray.push(randomItem);
+                console.log(`current item: ${randomItem}`)
+            } else {
+                console.log('Same item as before')
+                continue;
+            }
         }
     }
-    previousItem = currentItem;
 
-    while (randomItemArray.length < 2) {
-        randomItem2 = getRandomItem();
-        currentItem = AllItemsArray[randomItem2];
-        catalogImageReference2.src = currentItem.picturePath;
-        catalogImageReference2.alt = currentItem.description;
-        if (currentItem !== previousItem && randomItem2 !== randomItem) {
-            randomItemArray.push(randomItem);
-            console.log(`current item: ${randomItem2}`)
-        } else {
-            console.log('Same item as before')
-            continue;
+    previousItem = randomItem2;
+
+    for (var i = 0; i < 1; i++) {
+        while (randomItem2 === previousItem) {
+            randomItem2 = getRandomItem();
+            itemImage = AllItemsArray[randomItem2];
+            catalogImageReference2.src = itemImage.picturePath;
+            catalogImageReference2.alt = itemImage.description;
+            if (randomItem2 !== previousItem) {
+                randomItemArray.push(randomItem2);
+                console.log(`current item: ${randomItem2}`)
+            } else {
+                console.log('Same item as before')
+                continue;
+            }
         }
     }
-    previousItem = currentItem;
+    previousItem = randomItem3;
 
-    while (randomItemArray.length < 3) {
-        randomItem = getRandomItem();
-        currentItem = AllItemsArray[randomItem];
-        catalogImageReference3.src = currentItem.picturePath;
-        catalogImageReference3.alt = currentItem.description;
-        if (currentItem !== previousItem && randomItem3 !== randomItem2) {
-            randomItemArray.push(randomItem);
-            console.log(`current item: ${randomItem3}`)
-        } else {
-            console.log('Same item as before')
-            continue;
+    for (var i = 0; i < 1; i++) {
+        while (randomItem3 === previousItem) {
+            randomItem3 = getRandomItem();
+            itemImage = AllItemsArray[randomItem3];
+            catalogImageReference3.src = itemImage.picturePath;
+            catalogImageReference3.alt = itemImage.description;
+            if (randomItem3 !== previousItem) {
+                randomItemArray.push(randomItem3);
+                console.log(`current item: ${randomItem3}`)
+            } else {
+                console.log('Same item as before')
+                continue;
+            }
         }
     }
     randomItemArray.length = 0;
