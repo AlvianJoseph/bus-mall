@@ -21,7 +21,18 @@ new CatalogItem("img/breakfast.jpg", 'A breakfast');
 new CatalogItem("img/bubblegum.jpg", 'bubblegum');
 new CatalogItem("img/chair.jpg", 'A chair');
 new CatalogItem("img/cthulhu.jpg", 'cthulhu');
-new CatalogItem("img/dog-duck.jpg", 'A dog with duck');
+new CatalogItem("img/dragon.jpg", 'A dragon');
+new CatalogItem("img/pen.jpg", 'A pen');
+new CatalogItem("img/pet-sweep.jpg", 'a pet sweep');
+new CatalogItem("img/scissors.jpg", 'scissors');
+new CatalogItem("img/shark.jpg", 'A shark');
+new CatalogItem("img/sweep.png", 'sweep');
+new CatalogItem("img/tauntaun.jpg", 'tauntaun');
+new CatalogItem("img/unicorn.jpg", 'A unicorn');
+new CatalogItem("img/usb.gif", 'A usb');
+new CatalogItem("img/water-can.jpg", 'A water can');
+new CatalogItem("img/wine-glass.jpg", 'A glass of wine');
+
 
 function getRandomItem() {
     var randomItemNumber = Math.floor(Math.random() * AllItemsArray.length);
