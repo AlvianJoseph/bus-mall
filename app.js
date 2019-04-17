@@ -4,10 +4,20 @@
 var allCatalogItemsArray = [];
 var itemDescriptions = [];
 
+var totalClicks = 0;
+var MAX_CLICKS = 30;
+
+var previousItemArray = [-1, -2, -3];
+var currentItemArray = [];
+
+function getRandomItem() {
+    var randomNumber = Math.floor(Math.random() * allCatalogItemsArray.length);
+    return randomNumber;
+}
+
 function CatalogItem(picturePath, description) {
     this.picturePath = picturePath;
     this.description = description;
-
     this.timesClicked = 0;
 
     allCatalogItemsArray.push(this);
@@ -18,18 +28,7 @@ function CatalogItem(picturePath, description) {
     }
 }
 
-function getRandomItem() {
-    var randomNumber = Math.floor(Math.random() * allCatalogItemsArray.length);
-    return randomNumber;
-}
-
-var totalClicks = 0;
-var MAX_CLICKS = 30;
-
-var previousItemArray = [-1, -2, -3];
-var currentItemArray = [];
-
-function renderCatalogItem(event) {
+function renderCatalogChoices(event) {
     if (event) {
         for (var i = 0; i < allCatalogItemsArray.length; i++) {
             if (event.target.alt == allCatalogItemsArray[i].description) {
@@ -43,58 +42,44 @@ function renderCatalogItem(event) {
         }
     }
 
-    var randomItem = -1;
-    var randomItem2 = -1;
-    var randomItem3 = -1;
-    var itemImage = allCatalogItemsArray[randomItem];
+    var randomItemOne = -1;
+    var randomItemTwo = -1;
+    var randomItemThree = -1;
+
     var catalogImageReference = document.getElementById('catalog-item');
-    var catalogImageReference2 = document.getElementById('catalog-item2');
-    var catalogImageReference3 = document.getElementById('catalog-item3');
+    var catalogImageReferenceTwo = document.getElementById('catalog-item2');
+    var catalogImageReferenceThree = document.getElementById('catalog-item3');
 
-    while (currentItemArray.length < 1) {
-        randomItem = getRandomItem();
-        itemImage = allCatalogItemsArray[randomItem];
-        catalogImageReference.src = itemImage.picturePath;
-        catalogImageReference.alt = itemImage.description;
-        if (!previousItemArray.includes(randomItem)) {
-            currentItemArray.push(randomItem);
-            previousItemArray = currentItemArray;
-            console.log(`current item: ${currentItemArray[0]}, ${catalogImageReference.alt}`)
-        } else {
-            console.log('Same item as before')
-            continue;
-        }
-    }
-
-    while (currentItemArray.length < 2) {
-        randomItem2 = getRandomItem();
-        itemImage = allCatalogItemsArray[randomItem2];
-        catalogImageReference2.src = itemImage.picturePath;
-        catalogImageReference2.alt = itemImage.description;
-        if (!previousItemArray.includes(randomItem2)) {
-            currentItemArray.push(randomItem2);
-            previousItemArray = currentItemArray;
-            console.log(`current item: ${currentItemArray[1]}, ${catalogImageReference2.alt}`)
-        } else {
-            console.log('Same item as before')
-            continue;
-        }
-    }
-
+    var randomItemArray = [randomItemOne, randomItemTwo, randomItemThree];
+    var itemImage = allCatalogItemsArray[Number];
     while (currentItemArray.length < 3) {
-        randomItem3 = getRandomItem();
-        itemImage = allCatalogItemsArray[randomItem3];
-        catalogImageReference3.src = itemImage.picturePath;
-        catalogImageReference3.alt = itemImage.description;
-        if (!previousItemArray.includes(randomItem3)) {
-            currentItemArray.push(randomItem3);
-            previousItemArray = currentItemArray;
-            console.log(`current item: ${currentItemArray[2]}, ${catalogImageReference3.alt}`)
-        } else {
-            console.log('Same item as before')
-            continue;
+        for (var i = 0; i < randomItemArray.length; i++) {
+            randomItemArray[i] = getRandomItem();
+            itemImage = allCatalogItemsArray[randomItemArray[i]];
+
+            if (randomItemArray[i] === randomItemArray[0]) {
+                catalogImageReference.src = itemImage.picturePath;
+                catalogImageReference.alt = itemImage.description;
+
+            } else if (randomItemArray[i] === randomItemArray[1]) {
+                catalogImageReferenceTwo.src = itemImage.picturePath;
+                catalogImageReferenceTwo.alt = itemImage.description;
+
+            } else if (randomItemArray[i] === randomItemArray[2]) {
+                catalogImageReferenceThree.src = itemImage.picturePath;
+                catalogImageReferenceThree.alt = itemImage.description;
+            }
+            if (!previousItemArray.includes(randomItemArray[i])) {
+                currentItemArray.push(randomItemArray[i]);
+                previousItemArray = currentItemArray;
+                console.log(`current item set: ${catalogImageReference.alt}, ${catalogImageReferenceTwo.alt}, ${catalogImageReferenceThree.alt}`)
+            } else {
+                console.log('Same item as before')
+                continue;
+            }
         }
     }
+
     currentItemArray.length = 0;
 }
 
@@ -146,12 +131,12 @@ new CatalogItem("img/usb.gif", 'A usb');
 new CatalogItem("img/water-can.jpg", 'A water can');
 new CatalogItem("img/wine-glass.jpg", 'A glass of wine');
 
-renderCatalogItem();
+renderCatalogChoices();
 var catalogImageReference = document.getElementById('catalog-item');
-catalogImageReference.addEventListener('click', renderCatalogItem);
+catalogImageReference.addEventListener('click', renderCatalogChoices);
 
-var catalogImageReference2 = document.getElementById('catalog-item2');
-catalogImageReference2.addEventListener('click', renderCatalogItem);
+var catalogImageReferenceTwo = document.getElementById('catalog-item2');
+catalogImageReferenceTwo.addEventListener('click', renderCatalogChoices);
 
-var catalogImageReference3 = document.getElementById('catalog-item3');
-catalogImageReference3.addEventListener('click', renderCatalogItem);
+var catalogImageReferenceThree = document.getElementById('catalog-item3');
+catalogImageReferenceThree.addEventListener('click', renderCatalogChoices);
