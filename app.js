@@ -1,14 +1,14 @@
-
 'use strict';
 
+//Data for slecting items from the catalog
 var allCatalogItemsArray = [];
-var itemDescriptions = [];
-
-var totalClicks = 0;
-var MAX_CLICKS = 30;
-
 var previousItemArray = [-1, -2, -3];
 var currentItemArray = [];
+
+//Data for table
+var itemDescriptions = [];
+var totalClicks = 0;
+var MAX_CLICKS = 30;
 
 function getRandomItem() {
     var randomNumber = Math.floor(Math.random() * allCatalogItemsArray.length);
@@ -28,7 +28,6 @@ function CatalogItem(picturePath, description) {
     }
 }
 
-var randomNumber = getRandomItem();
 
 function renderCatalogChoices(event) {
     if (event) {
@@ -53,15 +52,15 @@ function renderCatalogChoices(event) {
     var catalogImageReferenceThree = document.getElementById('catalog-item3');
     
     // --------------------------------------------------------------------
-    
+
     function isItemDuplicate(randomNumber) { //This still doesn't work, not sure what to pass as parameter. Array doesn't work.
         return currentItemArray.includes(randomNumber) || previousItemArray.includes(randomNumber);
     }
     // ----------------------------------------------------------------------------
 
     var randomItemArray = [randomItemOne, randomItemTwo, randomItemThree];
-    var itemImage = allCatalogItemsArray[Number];
-    while (currentItemArray.length < 3) {
+    var itemImage = allCatalogItemsArray[Number];// Assiging this variable to hold image values assigned from the objects array
+    while (currentItemArray.length < randomItemArray.length) {
         for (var i = 0; i < randomItemArray.length; i++) {
             randomItemArray[i] = getRandomItem();
             itemImage = allCatalogItemsArray[randomItemArray[i]];
@@ -88,8 +87,7 @@ function renderCatalogChoices(event) {
             }
         }
     }
-
-    currentItemArray.length = 0;
+    currentItemArray.length = 0; //resets array for next loop
 }
 
 function renderChart() {
