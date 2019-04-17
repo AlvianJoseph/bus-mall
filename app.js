@@ -1,19 +1,22 @@
 'use strict';
 
-//Data for slecting items from the catalog
 var allCatalogItemsArray = [];
-var previousItemArray = [-1, -2, -3];
+var previousItemArray = [];
 var currentItemArray = [];
+var randomItemArray = [randomItemOne, randomItemTwo, randomItemThree];
+var itemImage = allCatalogItemsArray[Number];
 
-//Data for table
 var itemDescriptions = [];
 var totalClicks = 0;
 var MAX_CLICKS = 30;
 
-function getRandomItem() {
-    var randomNumber = Math.floor(Math.random() * allCatalogItemsArray.length);
-    return randomNumber;
-}
+var randomItemOne = -1;
+var randomItemTwo = -1;
+var randomItemThree = -1;
+
+var catalogImageReference = document.getElementById('catalog-item');
+var catalogImageReferenceTwo = document.getElementById('catalog-item2');
+var catalogImageReferenceThree = document.getElementById('catalog-item3');
 
 function CatalogItem(picturePath, description) {
     this.picturePath = picturePath;
@@ -28,9 +31,21 @@ function CatalogItem(picturePath, description) {
     }
 }
 
+function storeUserChoices() {
+    var stringifiedCatalogItems = JSON.stringify(itemDescriptions);
+    localStorage.setItem('item', stringifiedCatalogItems)
+}
+
+function getRandomItem() {
+    var randomNumber = Math.floor(Math.random() * allCatalogItemsArray.length);
+    return randomNumber;
+}
 
 function renderCatalogChoices(event) {
-    if (event) {
+    if (event.target.id === 'imageContainer') {
+        alert('please choose an image')
+    }
+        generateRandomItems();
         for (var i = 0; i < allCatalogItemsArray.length; i++) {
             if (event.target.alt == allCatalogItemsArray[i].description) {
                 allCatalogItemsArray[i].registerClick();
@@ -39,27 +54,15 @@ function renderCatalogChoices(event) {
         totalClicks++;
 
         if (totalClicks === MAX_CLICKS) {
+            imageContainer.removeEventListener('click', renderCatalogChoices);
+            storeUserChoices();
             renderChart();
         }
     }
 
-    var randomItemOne = -1;
-    var randomItemTwo = -1;
-    var randomItemThree = -1;
+var newRandomNumber;
 
-    var catalogImageReference = document.getElementById('catalog-item');
-    var catalogImageReferenceTwo = document.getElementById('catalog-item2');
-    var catalogImageReferenceThree = document.getElementById('catalog-item3');
-    
-    // --------------------------------------------------------------------
-
-    function isItemDuplicate(randomNumber) { //This still doesn't work, not sure what to pass as parameter. Array doesn't work.
-        return currentItemArray.includes(randomNumber) || previousItemArray.includes(randomNumber);
-    }
-    // ----------------------------------------------------------------------------
-
-    var randomItemArray = [randomItemOne, randomItemTwo, randomItemThree];
-    var itemImage = allCatalogItemsArray[Number];// Assiging this variable to hold image values assigned from the objects array
+function generateRandomItems() {
     while (currentItemArray.length < randomItemArray.length) {
         for (var i = 0; i < randomItemArray.length; i++) {
             randomItemArray[i] = getRandomItem();
@@ -77,17 +80,17 @@ function renderCatalogChoices(event) {
                 catalogImageReferenceThree.src = itemImage.picturePath;
                 catalogImageReferenceThree.alt = itemImage.description;
             }
-            if (isItemDuplicate(randomItemArray[i])) {
-                    console.log('Same item as before')
-                    continue;
+            if (previousItemArray.includes(randomItemArray)) {
+                console.log('Same item as before')
+                continue;
             } else {
                 currentItemArray.push(randomItemArray[i]);
-                previousItemArray = currentItemArray;
+                previousItemArray.push(randomItemArray[i]);
                 console.log(`current item set: ${catalogImageReference.alt}, ${catalogImageReferenceTwo.alt}, ${catalogImageReferenceThree.alt}`)
             }
         }
     }
-    currentItemArray.length = 0; //resets array for next loop
+    currentItemArray.length = [];
 }
 
 function renderChart() {
@@ -96,6 +99,7 @@ function renderChart() {
     for (var i = 0; i < allCatalogItemsArray.length; i++) {
         totalVotes.push(allCatalogItemsArray[i].timesClicked);
     }
+
     new Chart(canvasReference, {
         type: 'bar',
         data: {
@@ -139,6 +143,7 @@ new CatalogItem("img/water-can.jpg", 'A water can');
 new CatalogItem("img/wine-glass.jpg", 'A glass of wine');
 
 renderCatalogChoices();
+generateRandomItems();
 var catalogImageReference = document.getElementById('catalog-item');
 catalogImageReference.addEventListener('click', renderCatalogChoices);
 
@@ -147,3 +152,6 @@ catalogImageReferenceTwo.addEventListener('click', renderCatalogChoices);
 
 var catalogImageReferenceThree = document.getElementById('catalog-item3');
 catalogImageReferenceThree.addEventListener('click', renderCatalogChoices);
+
+var imageContainer = document.getElementById('imageContainer');
+imageContainer.addEventListener('click', renderCatalogChoices)
