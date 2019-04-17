@@ -28,6 +28,8 @@ function CatalogItem(picturePath, description) {
     }
 }
 
+var randomNumber = getRandomItem();
+
 function renderCatalogChoices(event) {
     if (event) {
         for (var i = 0; i < allCatalogItemsArray.length; i++) {
@@ -49,6 +51,13 @@ function renderCatalogChoices(event) {
     var catalogImageReference = document.getElementById('catalog-item');
     var catalogImageReferenceTwo = document.getElementById('catalog-item2');
     var catalogImageReferenceThree = document.getElementById('catalog-item3');
+    
+    // --------------------------------------------------------------------
+    
+    function isItemDuplicate(randomNumber) { //This still doesn't work, not sure what to pass as parameter. Array doesn't work.
+        return currentItemArray.includes(randomNumber) || previousItemArray.includes(randomNumber);
+    }
+    // ----------------------------------------------------------------------------
 
     var randomItemArray = [randomItemOne, randomItemTwo, randomItemThree];
     var itemImage = allCatalogItemsArray[Number];
@@ -69,13 +78,13 @@ function renderCatalogChoices(event) {
                 catalogImageReferenceThree.src = itemImage.picturePath;
                 catalogImageReferenceThree.alt = itemImage.description;
             }
-            if (!previousItemArray.includes(randomItemArray[i])) {
+            if (isItemDuplicate(randomItemArray[i])) {
+                    console.log('Same item as before')
+                    continue;
+            } else {
                 currentItemArray.push(randomItemArray[i]);
                 previousItemArray = currentItemArray;
                 console.log(`current item set: ${catalogImageReference.alt}, ${catalogImageReferenceTwo.alt}, ${catalogImageReferenceThree.alt}`)
-            } else {
-                console.log('Same item as before')
-                continue;
             }
         }
     }
