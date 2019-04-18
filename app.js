@@ -1,23 +1,27 @@
 'use strict';
 
-//Data for slecting items from the catalog
 var allCatalogItemsArray = [];
-var previousItemArray = [-1, -2, -3];
+var previousItemArray = [];
 var currentItemArray = [];
+var randomItemArray = [randomItemOne, randomItemTwo, randomItemThree];
+var itemImage = allCatalogItemsArray[Number];
 
-//Data for table
 var itemDescriptions = [];
 var totalClicks = 0;
-var MAX_CLICKS = 30;
+var MAX_CLICKS = 25;
 
-function getRandomItem() {
-    var randomNumber = Math.floor(Math.random() * allCatalogItemsArray.length);
-    return randomNumber;
-}
+var randomItemOne = -1;
+var randomItemTwo = -1;
+var randomItemThree = -1;
+
+var catalogImageReference = document.getElementById('catalog-item');
+var catalogImageReferenceTwo = document.getElementById('catalog-item2');
+var catalogImageReferenceThree = document.getElementById('catalog-item3');
 
 function CatalogItem(picturePath, description) {
     this.picturePath = picturePath;
     this.description = description;
+    this.timesShown = 0;
     this.timesClicked = 0;
 
     allCatalogItemsArray.push(this);
@@ -28,43 +32,52 @@ function CatalogItem(picturePath, description) {
     }
 }
 
+function storeUserChoices() {
+    var stringifiedCatalogItems = JSON.stringify(itemDescriptions);
+    localStorage.setItem('item', stringifiedCatalogItems)
+}
 
-function renderCatalogChoices(event) {
+function getRandomItem() {
+    var randomNumber = Math.floor(Math.random() * allCatalogItemsArray.length);
+    return randomNumber;
+}
+
+function renderDataList() { // I need help with this, I'm getting all the data I need in the chart, but not sure how to get it in a list
+    var listReference = document.getElementById('catalog-list');
+    var listItem = document.createElement('li');
+    listItem.textContent = ('test');
+    listReference.append(listItem)
+}
+
+function getUserData(event) {
     if (event) {
+        generateCatalogChoices();
         for (var i = 0; i < allCatalogItemsArray.length; i++) {
             if (event.target.alt == allCatalogItemsArray[i].description) {
                 allCatalogItemsArray[i].registerClick();
             }
         }
         totalClicks++;
+        storeUserChoices();
 
         if (totalClicks === MAX_CLICKS) {
+            alert('Thanks for participating! No further choices will be logged')
+            imageContainer.removeEventListener('click', getUserData);
             renderChart();
+            renderDataList();
         }
     }
+}
 
-    var randomItemOne = -1;
-    var randomItemTwo = -1;
-    var randomItemThree = -1;
-
-    var catalogImageReference = document.getElementById('catalog-item');
-    var catalogImageReferenceTwo = document.getElementById('catalog-item2');
-    var catalogImageReferenceThree = document.getElementById('catalog-item3');
-    
-    // --------------------------------------------------------------------
-
-    function isItemDuplicate(randomNumber) { //This still doesn't work, not sure what to pass as parameter. Array doesn't work.
-        return currentItemArray.includes(randomNumber) || previousItemArray.includes(randomNumber);
-    }
-    // ----------------------------------------------------------------------------
-
-    var randomItemArray = [randomItemOne, randomItemTwo, randomItemThree];
-    var itemImage = allCatalogItemsArray[Number];// Assiging this variable to hold image values assigned from the objects array
+function generateCatalogChoices() {
     while (currentItemArray.length < randomItemArray.length) {
         for (var i = 0; i < randomItemArray.length; i++) {
             randomItemArray[i] = getRandomItem();
             itemImage = allCatalogItemsArray[randomItemArray[i]];
-
+            if (previousItemArray.length > 3) {
+                previousItemArray.shift();
+                console.log(previousItemArray);
+            }
             if (randomItemArray[i] === randomItemArray[0]) {
                 catalogImageReference.src = itemImage.picturePath;
                 catalogImageReference.alt = itemImage.description;
@@ -77,17 +90,18 @@ function renderCatalogChoices(event) {
                 catalogImageReferenceThree.src = itemImage.picturePath;
                 catalogImageReferenceThree.alt = itemImage.description;
             }
-            if (isItemDuplicate(randomItemArray[i])) {
-                    console.log('Same item as before')
-                    continue;
-            } else {
+            if (previousItemArray.includes(randomItemArray[i])) {
+                i--;
+                console.log('Same item as before')
+
+            } else if (!previousItemArray.includes(randomItemArray[i])) {
                 currentItemArray.push(randomItemArray[i]);
-                previousItemArray = currentItemArray;
+                previousItemArray.push(randomItemArray[i]);
                 console.log(`current item set: ${catalogImageReference.alt}, ${catalogImageReferenceTwo.alt}, ${catalogImageReferenceThree.alt}`)
             }
         }
     }
-    currentItemArray.length = 0; //resets array for next loop
+    currentItemArray.length = [];
 }
 
 function renderChart() {
@@ -103,7 +117,7 @@ function renderChart() {
             datasets: [{
                 label: 'Votes Per Item',
                 data: totalVotes, // an array of the number of votes per item
-                backgroundColor: ['red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink'],
+                backgroundColor: ['red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink'],
             }],
         },
         options: {
@@ -138,12 +152,18 @@ new CatalogItem("img/usb.gif", 'A usb');
 new CatalogItem("img/water-can.jpg", 'A water can');
 new CatalogItem("img/wine-glass.jpg", 'A glass of wine');
 
-renderCatalogChoices();
+getUserData();
+generateCatalogChoices();
+var listReference = document.getElementById('catalog-list');
+listReference.addEventListener('click', renderDataList)
 var catalogImageReference = document.getElementById('catalog-item');
-catalogImageReference.addEventListener('click', renderCatalogChoices);
+catalogImageReference.addEventListener('click', getUserData);
 
 var catalogImageReferenceTwo = document.getElementById('catalog-item2');
-catalogImageReferenceTwo.addEventListener('click', renderCatalogChoices);
+catalogImageReferenceTwo.addEventListener('click', getUserData);
 
 var catalogImageReferenceThree = document.getElementById('catalog-item3');
-catalogImageReferenceThree.addEventListener('click', renderCatalogChoices);
+catalogImageReferenceThree.addEventListener('click', getUserData);
+
+// var imageContainer = document.getElementById('imageContainer'); //currently causes too many clicks to be counted at once
+// imageContainer.addEventListener('click', getUserData)
