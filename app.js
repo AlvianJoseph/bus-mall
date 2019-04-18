@@ -8,7 +8,7 @@ var itemImage = allCatalogItemsArray[Number];
 
 var itemDescriptions = [];
 var totalClicks = 0;
-var MAX_CLICKS = 30;
+var MAX_CLICKS = 25;
 
 var randomItemOne = -1;
 var randomItemTwo = -1;
@@ -21,6 +21,7 @@ var catalogImageReferenceThree = document.getElementById('catalog-item3');
 function CatalogItem(picturePath, description) {
     this.picturePath = picturePath;
     this.description = description;
+    this.timesShown = 0;
     this.timesClicked = 0;
 
     allCatalogItemsArray.push(this);
@@ -41,33 +42,42 @@ function getRandomItem() {
     return randomNumber;
 }
 
-function renderCatalogChoices(event) {
-    if (event.target.id === 'imageContainer') {
-        alert('please choose an image')
-    }
-        generateRandomItems();
+function renderDataList() { // I need help with this, I'm getting all the data I need in the chart, but not sure how to get it in a list
+    var listReference = document.getElementById('catalog-list');
+    var listItem = document.createElement('li');
+    listItem.textContent = ('test');
+    listReference.append(listItem)
+}
+
+function getUserData(event) {
+    if (event) {
+        generateCatalogChoices();
         for (var i = 0; i < allCatalogItemsArray.length; i++) {
             if (event.target.alt == allCatalogItemsArray[i].description) {
                 allCatalogItemsArray[i].registerClick();
             }
         }
         totalClicks++;
+        storeUserChoices();
 
         if (totalClicks === MAX_CLICKS) {
-            imageContainer.removeEventListener('click', renderCatalogChoices);
-            storeUserChoices();
+            alert('Thanks for participating! No further choices will be logged')
+            imageContainer.removeEventListener('click', getUserData);
             renderChart();
+            renderDataList();
         }
     }
+}
 
-var newRandomNumber;
-
-function generateRandomItems() {
+function generateCatalogChoices() {
     while (currentItemArray.length < randomItemArray.length) {
         for (var i = 0; i < randomItemArray.length; i++) {
             randomItemArray[i] = getRandomItem();
             itemImage = allCatalogItemsArray[randomItemArray[i]];
-
+            if (previousItemArray.length > 3) {
+                previousItemArray.shift();
+                console.log(previousItemArray);
+            }
             if (randomItemArray[i] === randomItemArray[0]) {
                 catalogImageReference.src = itemImage.picturePath;
                 catalogImageReference.alt = itemImage.description;
@@ -80,10 +90,11 @@ function generateRandomItems() {
                 catalogImageReferenceThree.src = itemImage.picturePath;
                 catalogImageReferenceThree.alt = itemImage.description;
             }
-            if (previousItemArray.includes(randomItemArray)) {
+            if (previousItemArray.includes(randomItemArray[i])) {
+                i--;
                 console.log('Same item as before')
-                continue;
-            } else {
+
+            } else if (!previousItemArray.includes(randomItemArray[i])) {
                 currentItemArray.push(randomItemArray[i]);
                 previousItemArray.push(randomItemArray[i]);
                 console.log(`current item set: ${catalogImageReference.alt}, ${catalogImageReferenceTwo.alt}, ${catalogImageReferenceThree.alt}`)
@@ -99,7 +110,6 @@ function renderChart() {
     for (var i = 0; i < allCatalogItemsArray.length; i++) {
         totalVotes.push(allCatalogItemsArray[i].timesClicked);
     }
-
     new Chart(canvasReference, {
         type: 'bar',
         data: {
@@ -107,7 +117,7 @@ function renderChart() {
             datasets: [{
                 label: 'Votes Per Item',
                 data: totalVotes, // an array of the number of votes per item
-                backgroundColor: ['red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink'],
+                backgroundColor: ['red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink', 'black', 'red', 'blue', 'green', 'orange', 'pink'],
             }],
         },
         options: {
@@ -142,16 +152,18 @@ new CatalogItem("img/usb.gif", 'A usb');
 new CatalogItem("img/water-can.jpg", 'A water can');
 new CatalogItem("img/wine-glass.jpg", 'A glass of wine');
 
-renderCatalogChoices();
-generateRandomItems();
+getUserData();
+generateCatalogChoices();
+var listReference = document.getElementById('catalog-list');
+listReference.addEventListener('click', renderDataList)
 var catalogImageReference = document.getElementById('catalog-item');
-catalogImageReference.addEventListener('click', renderCatalogChoices);
+catalogImageReference.addEventListener('click', getUserData);
 
 var catalogImageReferenceTwo = document.getElementById('catalog-item2');
-catalogImageReferenceTwo.addEventListener('click', renderCatalogChoices);
+catalogImageReferenceTwo.addEventListener('click', getUserData);
 
 var catalogImageReferenceThree = document.getElementById('catalog-item3');
-catalogImageReferenceThree.addEventListener('click', renderCatalogChoices);
+catalogImageReferenceThree.addEventListener('click', getUserData);
 
-var imageContainer = document.getElementById('imageContainer');
-imageContainer.addEventListener('click', renderCatalogChoices)
+// var imageContainer = document.getElementById('imageContainer'); //currently causes too many clicks to be counted at once
+// imageContainer.addEventListener('click', getUserData)
